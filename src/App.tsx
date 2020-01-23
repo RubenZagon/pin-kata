@@ -1,11 +1,10 @@
 import React from 'react';
 import './App.css';
 import { Provider } from 'react-redux'
-import { createStore } from 'redux';
 import { Pinpad } from './components/pinPad/pinPad';
-import pinPadApp from './reducers';
+import storePinPad from './redux';
 
-let storePinPad = createStore(pinPadApp)
+
 
 
 const App: React.FC = () => {

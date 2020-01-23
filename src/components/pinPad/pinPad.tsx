@@ -1,35 +1,48 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styled from '@emotion/styled';
 import { KeyNumber } from "../keyNumber/keyNumber";
 import { Display } from "../display/display";
+import { handlePinCode, checkedPin } from "../../utils/handlePinCode/handlePinCode";
 
 interface PinpadProps {
 
 }
 
 export const Pinpad: FC<PinpadProps> = (props) => {
-  let numbers = [];
+  let keyNumbers = [];
+  const [pinDisplay, setPinDisplay] = useState<string>('');
 
-  function pressKey(value: number): any {
-    console.log(value);
-
+  function pressKey(value: number): void {
+    let text = value.toString()
+    if (pinDisplay.length < 4 && pinDisplay !== 'OK') {
+      setPinDisplay(pinDisplay + text)
+    }
   }
 
+  if (checkedPin(pinDisplay) === 'OK') {
+    setPinDisplay('OK')
+  }
+
+  if (pinDisplay.length === 4 && checkedPin(pinDisplay) === 'ERROR') {
+    setPinDisplay('ERROR')
+    setTimeout(() => setPinDisplay(''), 1000)
+  }
+
+  // CREACIÓN DE LAS TECLAS
   for (let i = 0; i < 10; i++) {
-    numbers.push(i);
+    keyNumbers.push(i);
   }
 
-  const listKeys = numbers.map(numb => {
-    return <KeyNumber onClick={pressKey(numb)} number={numb} className={'numb' + numb.toString()} />
+  const Keyboard = keyNumbers.map(numb => {
+    return <KeyNumber onClick={() => pressKey(numb)} number={numb} className={'numb' + numb.toString()} />
   })
-  console.log(numbers);
 
-
+  // IMPRIMIR COMPONENTE
   return (
     <Container>
-      <Display />
+      <Display text={pinDisplay} />
       <NumbersContainer>
-        {listKeys.reverse()}
+        {Keyboard.reverse()}
       </NumbersContainer>
     </Container>
   );

@@ -5,7 +5,7 @@ export function handlePinCode(pin: string) {
   return checkedPin(pin)
 }
 
-function checkedPin(pin: string) {
+export function checkedPin(pin: string) {
   return correctPin === pin ? 'OK' : 'ERROR'
 }
 

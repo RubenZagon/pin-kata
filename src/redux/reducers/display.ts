@@ -4,7 +4,7 @@ interface Action {
   text: string
 }
 
-const displayNumber = (state = {}, action: Action) => {
+const displayNumber = (state = 'prueba', action: Action) => {
   switch (action.type) {
     case 'ADD_NUMBER':
       return {
