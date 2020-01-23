@@ -11,21 +11,36 @@ interface PinpadProps {
 export const Pinpad: FC<PinpadProps> = (props) => {
   let keyNumbers = [];
   const [pinDisplay, setPinDisplay] = useState<string>('');
+  const [intent, setIntent] = useState<number>(0);
+
+
+
 
   function pressKey(value: number): void {
     let text = value.toString()
     if (pinDisplay.length < 4 && pinDisplay !== 'OK') {
-      setPinDisplay(pinDisplay + text)
+      setPinDisplay(pinDisplay + text);
     }
   }
 
   if (checkedPin(pinDisplay) === 'OK') {
-    setPinDisplay('OK')
+    setPinDisplay('OK');
   }
 
   if (pinDisplay.length === 4 && checkedPin(pinDisplay) === 'ERROR') {
-    setPinDisplay('ERROR')
-    setTimeout(() => setPinDisplay(''), 1000)
+    if (intent === 2) {
+      setPinDisplay('🔒 LOCKED');
+      setTimeout(() => {
+        setPinDisplay('');
+        setIntent(0);
+      }, 5000);
+    } else {
+      setPinDisplay('ERROR');
+      setIntent(intent + 1);
+      console.log(intent);
+
+      setTimeout(() => setPinDisplay(''), 1000);
+    }
   }
 
   // CREACIÓN DE LAS TECLAS
