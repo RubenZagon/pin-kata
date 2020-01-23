@@ -10,12 +10,17 @@ interface PinpadProps {
 export const Pinpad: FC<PinpadProps> = (props) => {
   let numbers = [];
 
+  function pressKey(value: number): any {
+    console.log(value);
+
+  }
+
   for (let i = 0; i < 10; i++) {
     numbers.push(i);
   }
 
   const listKeys = numbers.map(numb => {
-    return <KeyNumber number={numb} className={'numb' + numb.toString()} />
+    return <KeyNumber onClick={pressKey(numb)} number={numb} className={'numb' + numb.toString()} />
   })
   console.log(numbers);
 
@@ -29,6 +34,8 @@ export const Pinpad: FC<PinpadProps> = (props) => {
     </Container>
   );
 };
+
+
 
 const Container = styled.div`
 background: lightcyan;
