@@ -1,3 +1,8 @@
+body {
+  background: #1a1b1f;
+  overflow: hidden;
+}
+
 .App {
   text-align: center;
 }

@@ -14,26 +14,40 @@ export const KeyNumber: FC<KeynumberProps> = ({ number, onClick }) => {
   );
 };
 
-
+/**
+ * primary: #1a1b1f
+ * highlight: #FFFFF
+ * lightShadows: #242529 / #292a2f
+ * darkShadows: #151518
+ */
 
 const Button = styled.button`
 display:flex;
 justify-content:center;
 align-items:center;
-min-width:120px;
-/* max-height:50px; */
-background: lightgray;
-border: 2px solid gray;
+min-width:100px;
+background: #1a1b1f;
+
+box-shadow: 
+5px 5px 20px 0px rgba(21,21,24,1),
+1px 1px 0px 0px rgba(255,255,255,0.05),
+-5px -5px 20px 0px rgba(36,37,41,1);
+
+border: 1px solid #1a1b1f; 
 border-radius: 5%;
 font-size:1.5rem;
+color: lightgray;
 cursor:pointer;
 
 &:hover{
-  opacity:0.8;
+  color: orange;
 }
 
 &:active{
-  background: orange;
+  box-shadow: 
+    inset 5px 5px 20px 0px rgba(21,21,24,1),
+    1px 1px 0px 0px rgba(255,255,255,0.05),
+    inset -5px -5px 20px 0px rgba(36,37,41,1);
 }
 
 `

@@ -60,9 +60,16 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   );
 };
 
+/**
+ * primary: #1a1b1f
+ * highlight: #FFFFF
+ * lightShadows: #242529
+ * darkShadows: #151518
+ */
+
 
 const Container = styled.div`
-background: lightcyan;
+/* background: lightcyan; */
 width:100vw;
 height:100vh;
 
@@ -79,6 +86,8 @@ const NumbersContainer = styled.div`
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
 grid-template-rows: 1fr 1fr 1fr 1fr;
+grid-column-gap: 20px;
+grid-row-gap: 20px;
 
 button:nth-of-type(10){
   grid-column: 2/3;
