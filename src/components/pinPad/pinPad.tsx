@@ -41,7 +41,9 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   // LOGIC DISPLAY
   if (handlePinWhenTheTextIs('OK', pinDisplay, password)) {
     pinIsOK(setPinDisplay, resetPin, setIntent);
-    alert(`Bienvenido/a ${user}`) // Lo implemento para una prueba rápida
+    setTimeout(() => {
+      alert(`Bienvenido/a ${user}`) // Lo implemento para una prueba rápida
+    }, 1000)
   }
 
   if (handlePinWhenTheTextIs('ERROR', pinDisplay, password)) {
