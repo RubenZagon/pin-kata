@@ -4,6 +4,7 @@ import axios from 'axios'
 import { Display } from "../display/display";
 import { hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
 import { handlePinWhenTheTextIs, pinIsOK, handlePinErrors, keyboardCreator } from "./controllerPinPad";
+import { correctPin } from "../../App";
 
 interface PinpadProps {
 
@@ -17,6 +18,9 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   const [user, setUser] = useState<string>('')
 
   useEffect(() => {
+    // Remember
+    console.warn('\nRemember son, the code is :', correctPin);
+
     axios.get('https://jsonplaceholder.typicode.com/users')
       .then(res => {
         const persons = res.data
@@ -52,6 +56,7 @@ export const Pinpad: FC<PinpadProps> = (props) => {
 
   const Keyboard = keyboardCreator(keyNumbers, pressKey).reverse();
 
+
   return (
     <Container>
       <Display text={pinDisplay} />
@@ -62,6 +67,9 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   );
 };
 
+
+
+
 /**
  * primary: #1a1b1f
  * highlight: #FFFFF
@@ -71,9 +79,14 @@ export const Pinpad: FC<PinpadProps> = (props) => {
 
 
 const Container = styled.div`
-/* background: lightcyan; */
-width:100vw;
-height:100vh;
+
+width: 400px;
+height: 600px;
+
+@media(max-width:1024px){
+  width:100vw;
+  height:100vh;
+}
 
 &:last-child(1) {
   background: orange;
