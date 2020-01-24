@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import styled from '@emotion/styled';
+import axios from 'axios'
 import { Display } from "../display/display";
 import { hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
 import { handlePinWhenTheTextIs, pinIsOK, handlePinErrors, keyboardCreator } from "./controllerPinPad";
@@ -13,6 +14,16 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   const [pinDisplay, setPinDisplay] = useState<string>('');
   const [intent, setIntent] = useState<number>(0);
   const [password, setPassword] = useState<string>('');
+  const [user, setUser] = useState<string>('')
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+      .then(res => {
+        const persons = res.data
+        setUser(persons[3].name)
+      })
+  }, [])
+
 
   function resetPin(): void {
     setPinDisplay('');
@@ -30,6 +41,7 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   // LOGIC DISPLAY
   if (handlePinWhenTheTextIs('OK', pinDisplay, password)) {
     pinIsOK(setPinDisplay, resetPin, setIntent);
+    alert(`Bienvenido/a ${user}`) // Lo implemento para una prueba rápida
   }
 
   if (handlePinWhenTheTextIs('ERROR', pinDisplay, password)) {
