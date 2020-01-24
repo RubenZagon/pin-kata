@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 interface DisplayProps {
   className?: string;
-  text?: string
+  text: string
 }
 
 export const Display: FC<DisplayProps> = ({ text }) => {

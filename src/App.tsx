@@ -1,19 +1,15 @@
 import React from 'react';
 import './App.css';
-import { Provider } from 'react-redux'
 import { Pinpad } from './components/pinPad/pinPad';
-import storePinPad from './redux';
 
 
-
+export const correctPin = '4455'
 
 const App: React.FC = () => {
   return (
-    <Provider store={storePinPad}>
-      <div className="App">
-        <Pinpad />
-      </div>
-    </Provider>
+    <div className="App">
+      <Pinpad />
+    </div>
   );
 }
 

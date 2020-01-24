@@ -1,70 +1,52 @@
 import React, { FC, useState } from "react";
 import styled from '@emotion/styled';
-import { KeyNumber } from "../keyNumber/keyNumber";
 import { Display } from "../display/display";
-import { checkedPin, hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
+import { hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
+import { handlePinWhenTheTextIs, pinIsOK, handlePinErrors, keyboardCreator } from "./controllerPinPad";
 
 interface PinpadProps {
 
 }
 
 export const Pinpad: FC<PinpadProps> = (props) => {
-  let keyNumbers = [];
-  let password = '';
+  let keyNumbers: number[] = [];
   const [pinDisplay, setPinDisplay] = useState<string>('');
   const [intent, setIntent] = useState<number>(0);
+  const [password, setPassword] = useState<string>('');
 
-
-
+  function resetPin(): void {
+    setPinDisplay('');
+    setPassword('');
+  }
 
   function pressKey(value: number): void {
     let text = value.toString()
-    if (pinDisplay.length < 4 && pinDisplay !== 'OK') {
-      password += text
+    if (pinDisplay.length < 4) {
+      setPassword(password + text)
       setPinDisplay(hiddenNumbers(pinDisplay + text));
     }
   }
 
-  // LÓGICA DEL DISPLAY
-  if (checkedPin(password) === 'OK') {
-    setPinDisplay('OK');
+  // LOGIC DISPLAY
+  if (handlePinWhenTheTextIs('OK', pinDisplay, password)) {
+    pinIsOK(setPinDisplay, resetPin, setIntent);
   }
 
-  if (pinDisplay.length === 4 && checkedPin(password) === 'ERROR') {
-    if (intent === 2) {
-      setPinDisplay('🔒 LOCKED');
-      setTimeout(() => {
-        setPinDisplay('');
-        setIntent(0);
-      }, 5000);
-    } else {
-      setPinDisplay('ERROR');
-      setIntent(intent + 1);
-      setTimeout(() => setPinDisplay(''), 1000);
-    }
+  if (handlePinWhenTheTextIs('ERROR', pinDisplay, password)) {
+    handlePinErrors(intent, setPinDisplay, resetPin, setIntent);
   }
 
-  // CREACIÓN DE LAS TECLAS
-  for (let i = 0; i < 10; i++) {
-    keyNumbers.push(i);
-  }
+  const Keyboard = keyboardCreator(keyNumbers, pressKey).reverse();
 
-  const Keyboard = keyNumbers.map(numb => {
-    return <KeyNumber onClick={() => pressKey(numb)} number={numb} className={'numb' + numb.toString()} />
-  })
-
-  // IMPRIMIR COMPONENTE
   return (
     <Container>
       <Display text={pinDisplay} />
       <NumbersContainer>
-        {Keyboard.reverse()}
+        {Keyboard}
       </NumbersContainer>
     </Container>
   );
 };
-
-
 
 
 const Container = styled.div`
@@ -86,7 +68,7 @@ display:grid;
 grid-template-columns:1fr 1fr 1fr;
 grid-template-rows: 1fr 1fr 1fr 1fr;
 
-button:nth-child(10){
+button:nth-of-type(10){
   grid-column: 2/3;
 }
 

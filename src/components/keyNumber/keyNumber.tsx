@@ -5,11 +5,12 @@ interface KeynumberProps {
   number: number
   className?: string;
   onClick?: any;
+
 }
 
 export const KeyNumber: FC<KeynumberProps> = ({ number, onClick }) => {
   return (
-    <Button onClick={onClick}>{number}</Button>
+    <Button onClick={onClick} role='key'>{number}</Button>
   );
 };
 

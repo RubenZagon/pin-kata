@@ -1,4 +1,5 @@
 import { checkedPin, hiddenNumbers } from "../handlePinCode";
+import { correctPin } from "../../../App";
 
 
 describe('PinCode', () => {
@@ -7,7 +8,7 @@ describe('PinCode', () => {
   });
 
   test('Checked correct pin', () => {
-    expect(checkedPin('1235')).toBe('OK');
+    expect(checkedPin(correctPin)).toBe('OK');
     expect(checkedPin('6894')).toBe('ERROR');
   });
 });
