@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import styled from '@emotion/styled';
 import { KeyNumber } from "../keyNumber/keyNumber";
 import { Display } from "../display/display";
-import { handlePinCode, checkedPin } from "../../utils/handlePinCode/handlePinCode";
+import { checkedPin, hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
 
 interface PinpadProps {
 
@@ -10,6 +10,7 @@ interface PinpadProps {
 
 export const Pinpad: FC<PinpadProps> = (props) => {
   let keyNumbers = [];
+  let password = '';
   const [pinDisplay, setPinDisplay] = useState<string>('');
   const [intent, setIntent] = useState<number>(0);
 
@@ -19,15 +20,17 @@ export const Pinpad: FC<PinpadProps> = (props) => {
   function pressKey(value: number): void {
     let text = value.toString()
     if (pinDisplay.length < 4 && pinDisplay !== 'OK') {
-      setPinDisplay(pinDisplay + text);
+      password += text
+      setPinDisplay(hiddenNumbers(pinDisplay + text));
     }
   }
 
-  if (checkedPin(pinDisplay) === 'OK') {
+  // LÓGICA DEL DISPLAY
+  if (checkedPin(password) === 'OK') {
     setPinDisplay('OK');
   }
 
-  if (pinDisplay.length === 4 && checkedPin(pinDisplay) === 'ERROR') {
+  if (pinDisplay.length === 4 && checkedPin(password) === 'ERROR') {
     if (intent === 2) {
       setPinDisplay('🔒 LOCKED');
       setTimeout(() => {
@@ -37,8 +40,6 @@ export const Pinpad: FC<PinpadProps> = (props) => {
     } else {
       setPinDisplay('ERROR');
       setIntent(intent + 1);
-      console.log(intent);
-
       setTimeout(() => setPinDisplay(''), 1000);
     }
   }
@@ -62,6 +63,7 @@ export const Pinpad: FC<PinpadProps> = (props) => {
     </Container>
   );
 };
+
 
 
 

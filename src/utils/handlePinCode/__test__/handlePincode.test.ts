@@ -1,13 +1,13 @@
-import { handlePinCode } from "../handlePinCode";
+import { checkedPin, hiddenNumbers } from "../handlePinCode";
 
 
 describe('PinCode', () => {
-  test('The pin is always max 4 digits long', () => {
-    expect(handlePinCode('12345')).toContain('código');
+  test('Must hidden the numbers, less the last', () => {
+    expect(hiddenNumbers('1245')).toBe('***5');
   });
 
   test('Checked correct pin', () => {
-    expect(handlePinCode('1235')).toBe('OK');
-    expect(handlePinCode('6894')).toBe('ERROR');
+    expect(checkedPin('1235')).toBe('OK');
+    expect(checkedPin('6894')).toBe('ERROR');
   });
 });
