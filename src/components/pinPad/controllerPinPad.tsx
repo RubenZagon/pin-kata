@@ -20,7 +20,7 @@ export function handlePinErrors(intent: number, setPinDisplay: React.Dispatch<Re
     setTimeout(() => {
       resetPin();
       setIntent(0);
-    }, 5000);
+    }, 30000);
   }
   else {
     setPinDisplay('ERROR');
