@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, wait } from '@testing-library/react';
 import { Pinpad } from '../pinPad';
+import { act } from 'react-dom/test-utils';
+jest.useFakeTimers()
 
 describe('Pinpad', () => {
   test('render Pinpad', () => {
@@ -21,17 +23,39 @@ describe('Pinpad', () => {
     expect(displayText).toBeInTheDocument();
   });
 
-  test.skip('Bloqueo del código por agotar intentos', () => {
+  test.only('Bloqueo del código por agotar intentos', async () => {
     const { queryAllByRole, getByText } = render(<Pinpad />);
     const textElement = queryAllByRole(/key/i);
-    fireEvent.click(textElement[4])
-
-    setTimeout(() => {
+    await act(() => {
       fireEvent.click(textElement[4])
-    }, 2000);
+      fireEvent.click(textElement[4])
+      fireEvent.click(textElement[4])
+      fireEvent.click(textElement[4])
+      console.warn('Primer intento');
 
-    const displayText = getByText(/LOCKED/i)
-    expect(displayText).toBeInTheDocument();
+      jest.runTimersToTime(2000)
+      setTimeout(() => {
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+      }, 3000);
+      console.warn('Segundo intento');
+      jest.runTimersToTime(4000)
+      setTimeout(() => {
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+        fireEvent.click(textElement[4])
+      }, 5000);
+      jest.runTimersToTime(7000)
+      console.warn('Tercer intento');
+
+      const displayText = getByText(/LOCKED/i)
+      expect(displayText).toBeInTheDocument();
+    })
+
+
   });
 
   test('Código CORRECTO', () => {
