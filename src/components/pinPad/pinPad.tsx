@@ -1,57 +1,97 @@
-import React, { FC, useState, useEffect } from "react";
-import styled from '@emotion/styled';
+import React, {FC, useEffect, useState} from "react";
 import axios from 'axios'
-import { Display } from "../display/display";
-import { hiddenNumbers } from "../../utils/handlePinCode/handlePinCode";
-import { handlePinWhenTheTextIs, pinIsOK, handlePinErrors, keyboardCreator } from "./controllerPinPad";
-import { correctPin } from "../../App";
+import {Display} from "../display/display";
+import {checkedPin, hiddenNumbers} from "../../utils/handlePinCode/handlePinCode";
+import {keyboardCreator} from "./controllerPinPad";
+import {correctPin} from "../../App";
+import {Container, NumbersContainer} from "./styles";
+import {messageDisplay, PinPadObject} from "./types";
 
-interface PinpadProps {
-
-}
-
-export const Pinpad: FC<PinpadProps> = (props) => {
+export const Pinpad: FC<{}> = () => {
   let keyNumbers: number[] = [];
-  const [pinDisplay, setPinDisplay] = useState<string>('');
-  const [intent, setIntent] = useState<number>(0);
-  const [password, setPassword] = useState<string>('');
-  const [user, setUser] = useState<string>('')
+  const MESSAGE: { OK: messageDisplay, ERROR: messageDisplay , LOCKED: string} = {
+    OK: 'OK',
+    ERROR: 'ERROR',
+    LOCKED: '🔒 LOCKED'
+  };
+  const initialStatePinPad: PinPadObject = {
+    textOnDisplay: '',
+    password: '',
+    attemptsCounter: 0
+  };
+  const [pinPad, setPinPad] = useState<PinPadObject>(initialStatePinPad);
 
+  const [user, setUser] = useState<string>('');
   useEffect(() => {
     // Remember
     console.warn('\nRemember son, the code is :', correctPin);
 
     axios.get('https://jsonplaceholder.typicode.com/users')
       .then(res => {
-        const persons = res.data
-        setUser(persons[3].name)
+        const user = res.data;
+        setUser(user[3].name)
       })
-  }, [])
+  }, []);
 
+
+  function printTextOnDisplay(text: string) {
+    setPinPad({...pinPad, textOnDisplay: text});
+  }
 
   function resetPin(): void {
-    setPinDisplay('');
-    setPassword('');
+    setPinPad({
+      ...pinPad,
+      textOnDisplay: '',
+      password: ''
+    });
   }
 
   function pressKey(value: number): void {
-    let text = value.toString()
-    if (pinDisplay.length < 4) {
-      setPassword(password + text)
-      setPinDisplay(hiddenNumbers(pinDisplay + text));
+    let newNumber = value.toString();
+    if (pinPad.textOnDisplay.length < 4) {
+      setPinPad({
+        ...pinPad,
+        password: pinPad.password + newNumber,
+        textOnDisplay: hiddenNumbers(pinPad.textOnDisplay + newNumber)
+      });
     }
   }
 
-  // LOGIC DISPLAY
-  if (handlePinWhenTheTextIs('OK', pinDisplay, password)) {
-    pinIsOK(setPinDisplay, resetPin, setIntent);
-    setTimeout(() => {
-      alert(`Bienvenido/a ${user}`) // Lo implemento para una prueba rápida
-    }, 1000)
+  function textOnDisplayIs(textOnDisplay: messageDisplay): boolean {
+    return pinPad.textOnDisplay.length === 4 && checkedPin(pinPad.password) === textOnDisplay;
   }
 
-  if (handlePinWhenTheTextIs('ERROR', pinDisplay, password)) {
-    handlePinErrors(intent, setPinDisplay, resetPin, setIntent);
+  if (textOnDisplayIs(MESSAGE.OK)) {
+    printTextOnDisplay(MESSAGE.OK);
+    resetAllIn(1);
+    showWelcomeMessageIn(1);
+  }
+
+  function resetAllIn(seconds: number) {
+    const time = seconds * 1000;
+    setTimeout(() => {
+      setPinPad(initialStatePinPad)
+    }, time);
+  }
+
+  function showWelcomeMessageIn(seconds: number) {
+    const time = seconds * 1000;
+    setTimeout(() => {
+      alert(`Bienvenido/a ${user}`)
+    }, time)
+  }
+
+  if (textOnDisplayIs("ERROR")) {
+    if (pinPad.attemptsCounter === 2) {
+      printTextOnDisplay(MESSAGE.LOCKED);
+      setTimeout(() => {
+        setPinPad(initialStatePinPad);
+      }, 30000);
+    } else {
+      printTextOnDisplay(MESSAGE.ERROR);
+      setPinPad({...pinPad, attemptsCounter: pinPad.attemptsCounter + 1});
+      setTimeout(() => resetPin(), 1000);
+    }
   }
 
   const Keyboard = keyboardCreator(keyNumbers, pressKey).reverse();
@@ -59,7 +99,7 @@ export const Pinpad: FC<PinpadProps> = (props) => {
 
   return (
     <Container>
-      <Display text={pinDisplay} />
+      <Display text={pinPad.textOnDisplay}/>
       <NumbersContainer>
         {Keyboard}
       </NumbersContainer>
@@ -70,42 +110,3 @@ export const Pinpad: FC<PinpadProps> = (props) => {
 
 
 
-/**
- * primary: #1a1b1f
- * highlight: #FFFFF
- * lightShadows: #242529
- * darkShadows: #151518
- */
-
-
-const Container = styled.div`
-
-width: 400px;
-height: 600px;
-
-@media(max-width:1024px){
-  width:100vw;
-  height:100vh;
-}
-
-&:last-child(1) {
-  background: orange;
-  opacity:0.3;
-}
-
-display:grid;
-grid-template-rows: 1fr 3fr;
-`
-
-const NumbersContainer = styled.div`
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-grid-template-rows: 1fr 1fr 1fr 1fr;
-grid-column-gap: 20px;
-grid-row-gap: 20px;
-
-button:nth-of-type(10){
-  grid-column: 2/3;
-}
-
-`

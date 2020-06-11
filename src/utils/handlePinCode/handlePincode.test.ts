@@ -1,5 +1,5 @@
-import { checkedPin, hiddenNumbers } from "../handlePinCode";
-import { correctPin } from "../../../App";
+import { checkedPin, hiddenNumbers } from "./handlePinCode";
+import { correctPin } from "../../App";
 
 
 describe('PinCode', () => {

@@ -1,16 +1,15 @@
 import React from "react";
-import { KeyNumber } from "../keyNumber/keyNumber";
-import { checkedPin } from "../../utils/handlePinCode/handlePinCode";
+import {KeyNumber} from "../keyNumber/keyNumber";
+import {checkedPin} from "../../utils/handlePinCode/handlePinCode";
 
 
 export function keyboardCreator(keyNumbers: number[], pressKey: (value: number) => void) {
   for (let i = 0; i < 10; i++) {
     keyNumbers.push(i);
   }
-  const Keyboard = keyNumbers.map(numb => {
-    return <KeyNumber key={numb} onClick={() => pressKey(numb)} number={numb} />;
+  return keyNumbers.map(numb => {
+    return <KeyNumber key={numb} onClick={() => pressKey(numb)} number={numb}/>;
   });
-  return Keyboard;
 }
 
 
@@ -39,6 +38,6 @@ export function pinIsOK(setPinDisplay: React.Dispatch<React.SetStateAction<strin
 }
 
 
-export function handlePinWhenTheTextIs(text: string, pinDisplay: string, password: string) {
+export function handleDisplayPinWhenTheTextIs(text: string, pinDisplay: string, password: string) {
   return pinDisplay.length === 4 && checkedPin(password) === text;
 }

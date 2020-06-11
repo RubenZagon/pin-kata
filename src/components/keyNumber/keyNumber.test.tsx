@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { KeyNumber } from '../keyNumber';
+import { KeyNumber } from './keyNumber';
 
 describe('Keynumber', () => {
   test('render Keynumber', () => {
